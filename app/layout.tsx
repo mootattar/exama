@@ -1,15 +1,15 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from 'next-themes';
-import { AuthProvider } from '@/lib/auth';
-import { ExamStoreProvider } from '@/lib/exam-store';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/lib/auth";
+import { ExamStoreProvider } from "@/lib/exam-store";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'ExamCraft - Create and Manage Exams',
-  description: 'Professional exam creation and management platform',
+  title: "ExamCraft - Create and Manage Exams",
+  description: "Professional exam creation and management platform",
 };
 
 export default function RootLayout({
@@ -22,14 +22,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          // defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
         >
           <AuthProvider>
-            <ExamStoreProvider>
-              {children}
-            </ExamStoreProvider>
+            <ExamStoreProvider>{children}</ExamStoreProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

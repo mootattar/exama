@@ -1,42 +1,42 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { 
-  FileText, 
-  PlusCircle, 
-  BarChart3, 
-  Settings, 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  FileText,
+  PlusCircle,
+  BarChart3,
+  Settings,
   User,
   LogOut,
-  GraduationCap
-} from 'lucide-react';
-import { useAuth } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
+  GraduationCap,
+} from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 const navigation = [
   {
-    name: 'New Exam',
-    href: '/dashboard/new-exam',
+    name: "New Exam",
+    href: "/dashboard/new-exam",
     icon: PlusCircle,
   },
   {
-    name: 'My Exams',
-    href: '/dashboard/exams',
+    name: "My Exams",
+    href: "/dashboard/exams",
     icon: FileText,
   },
   {
-    name: 'Results',
-    href: '/dashboard/results',
+    name: "Analytics",
+    href: "/dashboard/analytics",
     icon: BarChart3,
   },
   {
-    name: 'Settings',
-    href: '/dashboard/settings',
+    name: "Settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];
@@ -48,7 +48,7 @@ export function DashboardSidebar() {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -59,7 +59,7 @@ export function DashboardSidebar() {
           <span className="font-semibold">ExamCraft</span>
         </Link>
       </div>
-      
+
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="space-y-2">
           {navigation.map((item) => {
@@ -69,10 +69,10 @@ export function DashboardSidebar() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  'flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  "flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -88,7 +88,9 @@ export function DashboardSidebar() {
           <User className="h-4 w-4 text-muted-foreground" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{user?.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            <p className="text-xs text-muted-foreground truncate">
+              {user?.email}
+            </p>
           </div>
         </div>
         <Separator className="my-2" />

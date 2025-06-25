@@ -31,7 +31,7 @@ import {
 export default function ExamPage() {
   const params = useParams();
   const { user } = useAuth();
-  const { getExam, submitExamResult } = useExamStore();
+  const { getExam } = useExamStore();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [exam, setExam] = useState(getExam(params.id as string));
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -103,28 +103,10 @@ export default function ExamPage() {
     setScore(calculatedScore);
     setIsSubmitted(true);
 
-    if (exam.userId === user.id) {
-      console.log("exam id is <=> equal <=> user id");
-      return;
-    }
-    console.log(exam.userId);
-    console.log(user.id);
 
-    submitExamResult(
-      {
-        examId: exam.id,
-        examTitle: exam.title,
-        score: calculatedScore,
-        totalPoints: exam.questions.reduce((sum, q) => sum + q.points, 0),
-        completedAt: new Date(),
-        answers,
-        userId: user.id,
-      },
-      user.id
-    );
   };
 
-  if (!exam || new Date() >= new Date(exam.endsAt)) {
+  if (!exam) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -201,8 +183,7 @@ export default function ExamPage() {
   }
 
   if (isSubmitted) {
-    const totalPoints =
-      exam?.questions.reduce((sum, q) => sum + q.points, 0) || 10;
+    const totalPoints = exam?.questions.reduce((sum, q) => sum + q.points, 0) || 10;
     const percentage = Math.round((score / totalPoints) * 100);
 
     return (

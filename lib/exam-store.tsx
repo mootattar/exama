@@ -13,12 +13,15 @@ export interface Question {
 
 export interface Exam {
   id: string;
+  userId: string;
   title: string;
   description: string;
   questions: Question[];
   createdAt: Date;
   timeLimit?: number;
   isPublished: boolean;
+  startsAt: string;
+  endsAt: string;
 }
 
 export interface ExamResult {
@@ -29,16 +32,17 @@ export interface ExamResult {
   totalPoints: number;
   completedAt: Date;
   answers: Record<string, any>;
+  userId: string;
 }
 
 interface ExamStoreContextType {
   exams: Exam[];
   results: ExamResult[];
   createExam: (exam: Omit<Exam, "id" | "createdAt">) => string;
-  updateExam: (id: string, exam: Partial<Exam>) => void;
-  deleteExam: (id: string) => void;
+  updateExam: (id: string, exam: Partial<Exam>, userId: string) => void;
+  deleteExam: (id: string, userId: string) => void;
   getExam: (id: string) => Exam | undefined;
-  submitExamResult: (result: Omit<ExamResult, "id">) => void;
+  submitExamResult: (result: Omit<ExamResult, "id">, userId: string) => void;
 }
 
 const ExamStoreContext = createContext<ExamStoreContextType | undefined>(
@@ -51,7 +55,7 @@ export function ExamStoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Load mock data
-    const mockExam: Exam = JSON.parse(
+    const mockExam: Exam[] = JSON.parse(
       localStorage.getItem("exams") || "[]"
     ) || {
       id: "1",
@@ -84,7 +88,7 @@ export function ExamStoreProvider({ children }: { children: React.ReactNode }) {
       timeLimit: 60,
       isPublished: true,
     };
-    const mockResult: ExamResult = JSON.parse(
+    const mockResult: ExamResult[] = JSON.parse(
       localStorage.getItem("results") || "[]"
     ) || {
       id: "1",
@@ -112,22 +116,37 @@ export function ExamStoreProvider({ children }: { children: React.ReactNode }) {
     return newExam.id;
   };
 
-  const updateExam = (id: string, examData: Partial<Exam>) => {
+  const updateExam = (id: string, examData: Partial<Exam>, userId: string) => {
     setExams((prev) =>
       prev.map((exam) => (exam.id === id ? { ...exam, ...examData } : exam))
     );
+    const editedExams = exams.map((exam) =>
+      exam.id === id && exam.userId === userId ? { ...exam, ...examData } : exam
+    );
+    localStorage.setItem("exams", JSON.stringify(editedExams));
   };
 
-  const deleteExam = (id: string) => {
-    setExams((prev) => prev.filter((exam) => exam.id !== id));
+  const deleteExam = (id: string, userId: string) => {
+    setExams((prev) =>
+      prev.filter((exam) => exam.id !== id && exam.userId === userId)
+    );
+    const allExams = exams.filter(
+      (exam) => exam.id !== id && exam.userId === userId
+    );
+    localStorage.setItem("exams", JSON.stringify(allExams));
   };
 
   const getExam = (id: string) => {
-    console.log(exams);
     return exams.find((exam) => exam.id === id);
   };
 
-  const submitExamResult = (resultData: Omit<ExamResult, "id">) => {
+  const submitExamResult = (
+    resultData: Omit<ExamResult, "id">,
+    userId: string
+  ) => {
+    if (resultData.userId !== userId) {
+      return;
+    }
     const newResult: ExamResult = {
       ...resultData,
       id: Date.now().toString(),

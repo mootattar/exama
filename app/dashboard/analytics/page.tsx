@@ -22,7 +22,6 @@ import {
 export default function ResultsPage() {
   const { results, exams } = useExamStore();
 
-  console.log(results);
   const totalSubmissions = results.length;
   const averageScore =
     results.length > 0

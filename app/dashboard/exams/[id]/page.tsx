@@ -25,12 +25,14 @@ import {
   Calendar,
   CheckCircle,
   Circle,
+  CalendarOff,
 } from "lucide-react";
 
 export default function ExamDetailPage() {
   const params = useParams();
   const { getExam } = useExamStore();
   const exam = getExam(params.id as string);
+  console.log(exam);
 
   if (!exam) {
     return (
@@ -100,13 +102,13 @@ export default function ExamDetailPage() {
                   Share
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href={`/exam/${exam.id}`}>
+                  <Link href={`/preview/${exam.id}`}>
                     <Eye className="w-4 h-4 mr-2" />
                     Preview
                   </Link>
                 </Button>
                 <Button asChild>
-                  <Link href={`/dashboard/exams/${exam.id}/edit`}>
+                  <Link href={`/dashboard/edit/${exam.id}`}>
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
                   </Link>
@@ -170,6 +172,42 @@ export default function ExamDetailPage() {
                       {new Date(exam.createdAt).toLocaleDateString()}
                     </div>
                     <div className="text-sm text-muted-foreground">Created</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="w-5 h-5 text-yellow-500" />
+                  <div>
+                    <div className="font-semibold">
+                      {exam.startsAt
+                        ? new Date(exam.startsAt).toLocaleString()
+                        : "No Limit"}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Starts At
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ينتهي في / الوقت انتهى */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <CalendarOff className="w-5 h-5 text-red-500" />
+                  <div>
+                    <div className="font-semibold">
+                      {exam.endsAt
+                        ? new Date() >= new Date(exam.endsAt)
+                          ? "Time is over"
+                          : new Date(exam.endsAt).toLocaleString()
+                        : "No Limit"}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Ends At</div>
                   </div>
                 </div>
               </CardContent>
@@ -351,13 +389,13 @@ export default function ExamDetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button asChild className="w-full">
-                    <Link href={`/dashboard/exams/${exam.id}/edit`}>
+                    <Link href={`/dashboard/edit/${exam.id}`}>
                       <Edit className="w-4 h-4 mr-2" />
                       Edit Exam
                     </Link>
                   </Button>
                   <Button variant="outline" asChild className="w-full">
-                    <Link href={`/exam/${exam.id}`}>
+                    <Link href={`/preview/${exam.id}`}>
                       <Eye className="w-4 h-4 mr-2" />
                       Take Exam
                     </Link>

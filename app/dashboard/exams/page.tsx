@@ -151,7 +151,7 @@ export default function ExamsPage() {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/exams/${exam.id}/edit`}>
+                          <Link href={`/dashboard/edit/${exam.id}`}>
                             <Edit className="w-4 h-4 mr-2" />
                             Edit Exam
                           </Link>
@@ -217,7 +217,7 @@ export default function ExamsPage() {
 
                     <div className="flex items-center space-x-2">
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/exam/${exam.id}`}>
+                        <Link href={`/preview/${exam.id}`}>
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
                         </Link>

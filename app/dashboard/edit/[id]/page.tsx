@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,11 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
-export default function NewExamPage() {
+export default function EditExamPage() {
+  const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
-  const { createExam, exams } = useExamStore();
+  const { getExam, updateExam } = useExamStore();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeLimit, setTimeLimit] = useState<number | undefined>(undefined);
@@ -48,6 +49,20 @@ export default function NewExamPage() {
   const [endDate, setEndDate] = useState("");
 
   const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
+
+  useEffect(() => {
+    const foundExam = getExam(params.id as string);
+    setTitle(foundExam?.title || "");
+    setDescription(foundExam?.description || "");
+    setTimeLimit(foundExam?.timeLimit);
+    setQuestions(foundExam?.questions || []);
+    setIsPublished(foundExam?.isPublished || false);
+    setStartDate(foundExam?.startsAt || "");
+    setEndDate(foundExam?.endsAt || "");
+    if (foundExam?.timeLimit) {
+      setHasTimeLimit(true);
+    }
+  }, [params.id, getExam]);
 
   const handleAddQuestion = () => {
     setEditingQuestion(null);
@@ -91,7 +106,7 @@ export default function NewExamPage() {
       alert("Please add at least one question");
       return;
     }
-    if (startDate && startDate >= endDate && hasTimeLimit) {
+    if (startDate >= endDate && hasTimeLimit) {
       alert("please add correct date!");
       return;
     }
@@ -100,18 +115,18 @@ export default function NewExamPage() {
     if (!user) {
       return;
     }
-
     try {
-      const examId = createExam({
+      const examId = params.id as string;
+      const examData = {
         title: title.trim(),
-        userId: user.id,
         description: description.trim(),
         questions,
         timeLimit: hasTimeLimit ? timeLimit : undefined,
         isPublished,
         startsAt: startDate,
         endsAt: endDate,
-      });
+      };
+      updateExam(examId, examData, user.id);
       router.push(`/dashboard/exams/${examId}`);
     } catch (error) {
       alert("Failed to save exam. Please try again.");
